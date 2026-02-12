@@ -1,0 +1,40 @@
+Testing Assert Library
+======================
+
+Testing check...
+  FAIL: expected failure
+  check OK
+Testing assertTrue/assertFalse...
+  assertTrue/assertFalse OK
+Testing assertEqual...
+  FAIL: different strings
+    expected: 'world'
+    got:      'hello'
+  assertEqual OK
+Testing assertEqualInt...
+  FAIL: different ints
+    expected: 99
+    got:      42
+  assertEqualInt OK
+Testing assertEqualLong...
+  FAIL: different longs
+    expected: 200
+    got:      100
+  assertEqualLong OK
+Testing assertEqualBool...
+  FAIL: different bools
+    expected: false
+    got:      true
+  assertEqualBool OK
+Testing assertNotEqual...
+  assertNotEqual OK
+Testing comparison assertions...
+  comparisons OK
+Testing string assertions...
+  string assertions OK
+Testing counters...
+  FAIL: fail one
+  counters OK
+
+Self-tests passed: 31, failed: 0
+All self-tests passed!

@@ -1,0 +1,212 @@
+# ==============================================================================
+# assert.sn - Test Assertion Library
+# ==============================================================================
+# Provides assertion functions for writing Sindarin tests.
+#
+# Usage:
+#   import "test/assert"
+#
+#   fn main(): void =>
+#       check(1 + 1 == 2, "basic arithmetic")
+#       assertEqual("hello", "hello", "string equality")
+#       assertEqualInt(42, 42, "integer equality")
+#       assertTrue(true, "should be true")
+#       assertFalse(false, "should be false")
+#       summary()
+# ==============================================================================
+
+# Test counters
+var testsPassed: int = 0
+var testsFailed: int = 0
+
+# ============================================================================
+# Core Assertion
+# ============================================================================
+
+fn check(condition: bool, message: str): void =>
+    if !condition =>
+        print($"  FAIL: {message}\n")
+        testsFailed++
+    else =>
+        testsPassed++
+
+# ============================================================================
+# Boolean Assertions
+# ============================================================================
+
+fn assertTrue(condition: bool, message: str): void =>
+    check(condition, message)
+
+fn assertFalse(condition: bool, message: str): void =>
+    check(!condition, message)
+
+# ============================================================================
+# Equality Assertions
+# ============================================================================
+
+fn assertEqual(actual: str, expected: str, message: str): void =>
+    if actual != expected =>
+        print($"  FAIL: {message}\n")
+        print($"    expected: '{expected}'\n")
+        print($"    got:      '{actual}'\n")
+        testsFailed++
+    else =>
+        testsPassed++
+
+fn assertEqualInt(actual: int, expected: int, message: str): void =>
+    if actual != expected =>
+        print($"  FAIL: {message}\n")
+        print($"    expected: {expected}\n")
+        print($"    got:      {actual}\n")
+        testsFailed++
+    else =>
+        testsPassed++
+
+fn assertEqualLong(actual: long, expected: long, message: str): void =>
+    if actual != expected =>
+        print($"  FAIL: {message}\n")
+        print($"    expected: {expected}\n")
+        print($"    got:      {actual}\n")
+        testsFailed++
+    else =>
+        testsPassed++
+
+fn assertEqualDouble(actual: double, expected: double, message: str): void =>
+    if actual != expected =>
+        print($"  FAIL: {message}\n")
+        print($"    expected: {expected}\n")
+        print($"    got:      {actual}\n")
+        testsFailed++
+    else =>
+        testsPassed++
+
+fn assertEqualFloat(actual: float, expected: float, message: str): void =>
+    if actual != expected =>
+        print($"  FAIL: {message}\n")
+        print($"    expected: {expected}\n")
+        print($"    got:      {actual}\n")
+        testsFailed++
+    else =>
+        testsPassed++
+
+fn assertEqualBool(actual: bool, expected: bool, message: str): void =>
+    if actual != expected =>
+        print($"  FAIL: {message}\n")
+        print($"    expected: {expected}\n")
+        print($"    got:      {actual}\n")
+        testsFailed++
+    else =>
+        testsPassed++
+
+fn assertEqualChar(actual: char, expected: char, message: str): void =>
+    if actual != expected =>
+        print($"  FAIL: {message}\n")
+        print($"    expected: '{expected}'\n")
+        print($"    got:      '{actual}'\n")
+        testsFailed++
+    else =>
+        testsPassed++
+
+# ============================================================================
+# Inequality Assertions
+# ============================================================================
+
+fn assertNotEqual(actual: str, expected: str, message: str): void =>
+    check(actual != expected, message)
+
+fn assertNotEqualInt(actual: int, expected: int, message: str): void =>
+    check(actual != expected, message)
+
+fn assertNotEqualLong(actual: long, expected: long, message: str): void =>
+    check(actual != expected, message)
+
+fn assertNotEqualDouble(actual: double, expected: double, message: str): void =>
+    check(actual != expected, message)
+
+# ============================================================================
+# Comparison Assertions
+# ============================================================================
+
+fn assertGreaterThan(actual: int, expected: int, message: str): void =>
+    if actual <= expected =>
+        print($"  FAIL: {message}\n")
+        print($"    expected > {expected}, got {actual}\n")
+        testsFailed++
+    else =>
+        testsPassed++
+
+fn assertLessThan(actual: int, expected: int, message: str): void =>
+    if actual >= expected =>
+        print($"  FAIL: {message}\n")
+        print($"    expected < {expected}, got {actual}\n")
+        testsFailed++
+    else =>
+        testsPassed++
+
+fn assertGreaterThanOrEqual(actual: int, expected: int, message: str): void =>
+    if actual < expected =>
+        print($"  FAIL: {message}\n")
+        print($"    expected >= {expected}, got {actual}\n")
+        testsFailed++
+    else =>
+        testsPassed++
+
+fn assertLessThanOrEqual(actual: int, expected: int, message: str): void =>
+    if actual > expected =>
+        print($"  FAIL: {message}\n")
+        print($"    expected <= {expected}, got {actual}\n")
+        testsFailed++
+    else =>
+        testsPassed++
+
+# ============================================================================
+# String Assertions
+# ============================================================================
+
+fn assertContains(haystack: str, needle: str, message: str): void =>
+    if !haystack.contains(needle) =>
+        print($"  FAIL: {message}\n")
+        print($"    '{haystack}' does not contain '{needle}'\n")
+        testsFailed++
+    else =>
+        testsPassed++
+
+fn assertStartsWith(actual: str, prefix: str, message: str): void =>
+    if !actual.startsWith(prefix) =>
+        print($"  FAIL: {message}\n")
+        print($"    '{actual}' does not start with '{prefix}'\n")
+        testsFailed++
+    else =>
+        testsPassed++
+
+fn assertEndsWith(actual: str, suffix: str, message: str): void =>
+    if !actual.endsWith(suffix) =>
+        print($"  FAIL: {message}\n")
+        print($"    '{actual}' does not end with '{suffix}'\n")
+        testsFailed++
+    else =>
+        testsPassed++
+
+# ============================================================================
+# Summary & Counters
+# ============================================================================
+
+fn passed(): int =>
+    return testsPassed
+
+fn failed(): int =>
+    return testsFailed
+
+fn total(): int =>
+    return testsPassed + testsFailed
+
+fn reset(): void =>
+    testsPassed = 0
+    testsFailed = 0
+
+fn summary(): void =>
+    print($"\nTests passed: {testsPassed}, failed: {testsFailed}\n")
+    if testsFailed == 0 =>
+        print("All tests passed!\n")
+    else =>
+        print("Some tests failed!\n")

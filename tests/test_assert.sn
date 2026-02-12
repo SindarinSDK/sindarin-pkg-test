@@ -1,0 +1,160 @@
+# ==============================================================================
+# tests/test_assert.sn - Self-tests for the assertion library
+# ==============================================================================
+
+import "../src/assert"
+
+# Local check for testing the assertion library itself
+# (We can't use assert.check to test assert.check)
+var localPassed: int = 0
+var localFailed: int = 0
+
+fn verify(condition: bool, message: str): void =>
+    if !condition =>
+        print($"  FAIL: {message}\n")
+        localFailed++
+    else =>
+        localPassed++
+
+fn testCheck(): void =>
+    print("Testing check...\n")
+    reset()
+    check(true, "should pass")
+    verify(passed() == 1, "check(true) should increment passed")
+    verify(failed() == 0, "check(true) should not increment failed")
+
+    check(false, "expected failure")
+    verify(passed() == 1, "check(false) should not increment passed")
+    verify(failed() == 1, "check(false) should increment failed")
+    print("  check OK\n")
+
+fn testAssertTrue(): void =>
+    print("Testing assertTrue/assertFalse...\n")
+    reset()
+    assertTrue(true, "true is true")
+    verify(passed() == 1, "assertTrue(true) should pass")
+
+    assertFalse(false, "false is false")
+    verify(passed() == 2, "assertFalse(false) should pass")
+    print("  assertTrue/assertFalse OK\n")
+
+fn testAssertEqual(): void =>
+    print("Testing assertEqual...\n")
+    reset()
+    assertEqual("hello", "hello", "same strings")
+    verify(passed() == 1, "assertEqual same strings should pass")
+
+    assertEqual("hello", "world", "different strings")
+    verify(failed() == 1, "assertEqual different strings should fail")
+    print("  assertEqual OK\n")
+
+fn testAssertEqualInt(): void =>
+    print("Testing assertEqualInt...\n")
+    reset()
+    assertEqualInt(42, 42, "same ints")
+    verify(passed() == 1, "assertEqualInt same should pass")
+
+    assertEqualInt(42, 99, "different ints")
+    verify(failed() == 1, "assertEqualInt different should fail")
+    print("  assertEqualInt OK\n")
+
+fn testAssertEqualLong(): void =>
+    print("Testing assertEqualLong...\n")
+    reset()
+    assertEqualLong(100l, 100l, "same longs")
+    verify(passed() == 1, "assertEqualLong same should pass")
+
+    assertEqualLong(100l, 200l, "different longs")
+    verify(failed() == 1, "assertEqualLong different should fail")
+    print("  assertEqualLong OK\n")
+
+fn testAssertEqualBool(): void =>
+    print("Testing assertEqualBool...\n")
+    reset()
+    assertEqualBool(true, true, "same bools")
+    verify(passed() == 1, "assertEqualBool same should pass")
+
+    assertEqualBool(true, false, "different bools")
+    verify(failed() == 1, "assertEqualBool different should fail")
+    print("  assertEqualBool OK\n")
+
+fn testAssertNotEqual(): void =>
+    print("Testing assertNotEqual...\n")
+    reset()
+    assertNotEqual("hello", "world", "different strings")
+    verify(passed() == 1, "assertNotEqual different should pass")
+
+    assertNotEqualInt(1, 2, "different ints")
+    verify(passed() == 2, "assertNotEqualInt different should pass")
+    print("  assertNotEqual OK\n")
+
+fn testComparisons(): void =>
+    print("Testing comparison assertions...\n")
+    reset()
+    assertGreaterThan(10, 5, "10 > 5")
+    verify(passed() == 1, "assertGreaterThan should pass")
+
+    assertLessThan(5, 10, "5 < 10")
+    verify(passed() == 2, "assertLessThan should pass")
+
+    assertGreaterThanOrEqual(10, 10, "10 >= 10")
+    verify(passed() == 3, "assertGreaterThanOrEqual equal should pass")
+
+    assertGreaterThanOrEqual(11, 10, "11 >= 10")
+    verify(passed() == 4, "assertGreaterThanOrEqual greater should pass")
+
+    assertLessThanOrEqual(10, 10, "10 <= 10")
+    verify(passed() == 5, "assertLessThanOrEqual equal should pass")
+
+    assertLessThanOrEqual(9, 10, "9 <= 10")
+    verify(passed() == 6, "assertLessThanOrEqual less should pass")
+    print("  comparisons OK\n")
+
+fn testStringAssertions(): void =>
+    print("Testing string assertions...\n")
+    reset()
+    assertContains("hello world", "world", "contains world")
+    verify(passed() == 1, "assertContains should pass")
+
+    assertStartsWith("hello world", "hello", "starts with hello")
+    verify(passed() == 2, "assertStartsWith should pass")
+
+    assertEndsWith("hello world", "world", "ends with world")
+    verify(passed() == 3, "assertEndsWith should pass")
+    print("  string assertions OK\n")
+
+fn testCounters(): void =>
+    print("Testing counters...\n")
+    reset()
+    verify(passed() == 0, "passed should be 0 after reset")
+    verify(failed() == 0, "failed should be 0 after reset")
+    verify(total() == 0, "total should be 0 after reset")
+
+    check(true, "pass one")
+    check(true, "pass two")
+    check(false, "fail one")
+    verify(passed() == 2, "passed should be 2")
+    verify(failed() == 1, "failed should be 1")
+    verify(total() == 3, "total should be 3")
+    print("  counters OK\n")
+
+fn main(): void =>
+    print("Testing Assert Library\n")
+    print("======================\n\n")
+
+    testCheck()
+    testAssertTrue()
+    testAssertEqual()
+    testAssertEqualInt()
+    testAssertEqualLong()
+    testAssertEqualBool()
+    testAssertNotEqual()
+    testComparisons()
+    testStringAssertions()
+    testCounters()
+
+    print($"\nSelf-tests passed: {localPassed}, failed: {localFailed}\n")
+    if localFailed == 0 =>
+        print("All self-tests passed!\n")
+    else =>
+        print("Some self-tests failed!\n")
