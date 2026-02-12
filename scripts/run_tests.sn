@@ -14,15 +14,15 @@
 //     --no-color        - Disable colored output
 //     --parallel, -j N  - Run tests with N parallel workers (default: CPU count)
 
-import "../.sn/sindarin-pkg-sdk/src/os/os"
-import "../.sn/sindarin-pkg-sdk/src/os/process"
-import "../.sn/sindarin-pkg-sdk/src/os/env"
-import "../.sn/sindarin-pkg-sdk/src/io/path"
-import "../.sn/sindarin-pkg-sdk/src/io/directory"
-import "../.sn/sindarin-pkg-sdk/src/io/textfile"
-import "../.sn/sindarin-pkg-sdk/src/io/stdio"
-import "../.sn/sindarin-pkg-sdk/src/core/uuid"
-import "../.sn/sindarin-pkg-sdk/src/time/time"
+import "../../sindarin-pkg-sdk/src/os/os"
+import "../../sindarin-pkg-sdk/src/os/process"
+import "../../sindarin-pkg-sdk/src/os/env"
+import "../../sindarin-pkg-sdk/src/io/path"
+import "../../sindarin-pkg-sdk/src/io/directory"
+import "../../sindarin-pkg-sdk/src/io/textfile"
+import "../../sindarin-pkg-sdk/src/io/stdio"
+import "../../sindarin-pkg-sdk/src/core/uuid"
+import "../../sindarin-pkg-sdk/src/time/time"
 
 // Maximum parallel workers (using fixed batch approach with explicit handle variables)
 static var MAX_PARALLEL: int = 8
