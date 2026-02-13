@@ -24,8 +24,8 @@ import "../../sindarin-pkg-sdk/src/io/stdio"
 import "../../sindarin-pkg-sdk/src/core/uuid"
 import "../../sindarin-pkg-sdk/src/time/time"
 
-// Maximum parallel workers (using fixed batch approach with explicit handle variables)
-static var MAX_PARALLEL: int = 8
+// Maximum parallel workers
+static var MAX_PARALLEL: int = 64
 
 // ============================================================================
 // String Utilities
@@ -691,19 +691,10 @@ fn runSnTestsWithDir(runner: TestRunner, testType: str, customDir: str): bool =>
     if parallelWorkers < 1 =>
         parallelWorkers = 1
 
-    // Parallel execution using batched thread spawning
+    // Parallel execution using array-based thread spawning
     if parallelWorkers > 1 =>
         var batchStart: int = 0
         var allResults: TestResult[] = {}
-
-        // Placeholder result for unspawned slots
-        var placeholder: TestResult = TestResult {
-            testName: "",
-            status: "skip",
-            reason: "",
-            details: {},
-            elapsedMs: 0l
-        }
 
         // Show initial progress
         printProgress(0, testFiles.length)
@@ -712,68 +703,18 @@ fn runSnTestsWithDir(runner: TestRunner, testType: str, customDir: str): bool =>
             var batchEnd: int = batchStart + parallelWorkers
             if batchEnd > testFiles.length =>
                 batchEnd = testFiles.length
-            var batchSize: int = batchEnd - batchStart
 
-            // Declare handle variables (conditional spawning now works!)
-            var h0: TestResult = placeholder
-            var h1: TestResult = placeholder
-            var h2: TestResult = placeholder
-            var h3: TestResult = placeholder
-            var h4: TestResult = placeholder
-            var h5: TestResult = placeholder
-            var h6: TestResult = placeholder
-            var h7: TestResult = placeholder
+            // Spawn batch of threads into array
+            var batch: TestResult[] = {}
+            for i in batchStart..batchEnd =>
+                batch.push(&runSingleTest(runner, testFiles[i], testType, i))
 
-            // Spawn threads based on batch size
-            if batchSize > 0 =>
-                h0 = &runSingleTest(runner, testFiles[batchStart + 0], testType, batchStart + 0)
-            if batchSize > 1 =>
-                h1 = &runSingleTest(runner, testFiles[batchStart + 1], testType, batchStart + 1)
-            if batchSize > 2 =>
-                h2 = &runSingleTest(runner, testFiles[batchStart + 2], testType, batchStart + 2)
-            if batchSize > 3 =>
-                h3 = &runSingleTest(runner, testFiles[batchStart + 3], testType, batchStart + 3)
-            if batchSize > 4 =>
-                h4 = &runSingleTest(runner, testFiles[batchStart + 4], testType, batchStart + 4)
-            if batchSize > 5 =>
-                h5 = &runSingleTest(runner, testFiles[batchStart + 5], testType, batchStart + 5)
-            if batchSize > 6 =>
-                h6 = &runSingleTest(runner, testFiles[batchStart + 6], testType, batchStart + 6)
-            if batchSize > 7 =>
-                h7 = &runSingleTest(runner, testFiles[batchStart + 7], testType, batchStart + 7)
+            // Sync all threads in batch
+            batch!
 
-            // Sync all handles and collect results, updating progress after each
-            if batchSize > 0 =>
-                h0!
-                allResults.push(h0)
-                printProgress(allResults.length, testFiles.length)
-            if batchSize > 1 =>
-                h1!
-                allResults.push(h1)
-                printProgress(allResults.length, testFiles.length)
-            if batchSize > 2 =>
-                h2!
-                allResults.push(h2)
-                printProgress(allResults.length, testFiles.length)
-            if batchSize > 3 =>
-                h3!
-                allResults.push(h3)
-                printProgress(allResults.length, testFiles.length)
-            if batchSize > 4 =>
-                h4!
-                allResults.push(h4)
-                printProgress(allResults.length, testFiles.length)
-            if batchSize > 5 =>
-                h5!
-                allResults.push(h5)
-                printProgress(allResults.length, testFiles.length)
-            if batchSize > 6 =>
-                h6!
-                allResults.push(h6)
-                printProgress(allResults.length, testFiles.length)
-            if batchSize > 7 =>
-                h7!
-                allResults.push(h7)
+            // Collect results
+            for i in 0..batch.length =>
+                allResults.push(batch[i])
                 printProgress(allResults.length, testFiles.length)
 
             batchStart = batchEnd
