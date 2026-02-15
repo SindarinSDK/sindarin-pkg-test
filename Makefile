@@ -38,9 +38,8 @@ BIN_DIR := bin
 # Sindarin compiler (from PATH, or override with SN=path/to/sn)
 SN ?= sn
 
-# Sindarin scripts
-SCRIPTS_DIR := scripts
-RUN_TESTS_SN := $(SCRIPTS_DIR)/run_tests.sn
+# Sindarin test runner
+RUN_TESTS_SN := src/execute.sn
 
 # Source files (for dependency tracking)
 SRC_SOURCES := $(wildcard src/*.sn)
@@ -66,7 +65,7 @@ $(BIN_DIR):
 	@$(MKDIR) $(BIN_DIR)
 
 $(RUN_TESTS_BIN): $(RUN_TESTS_SN) $(SRC_SOURCES) | $(BIN_DIR)
-	@echo "Compiling run_tests.sn..."
+	@echo "Compiling execute.sn..."
 	@$(SN) $(RUN_TESTS_SN) -o $(RUN_TESTS_BIN) -l 1
 
 #------------------------------------------------------------------------------
