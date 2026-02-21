@@ -618,6 +618,9 @@ fn clearProgress(): void =>
     print($"{cr}                                        {cr}")
 
 fn printTestResult(result: TestResult, verbose: bool): void =>
+    if result.status == "pass" =>
+        return
+
     var timeStr: str = ""
     if result.elapsedMs > 0l =>
         if result.elapsedMs >= 1000l =>
