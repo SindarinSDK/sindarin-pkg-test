@@ -745,6 +745,9 @@ fn runSnTestsWithDir(runner: TestRunner, testType: str, customDir: str): bool =>
 
     var elapsed: long = Time.now().diff(startTime)
 
+    if failedCount == 0 =>
+        print($"\n  {colors.green}PASS{colors.nc}\n")
+
     print("\n------------------------------------------------------------\n")
     print($"Results: {colors.green}{passedCount} passed{colors.nc}, ")
     print($"{colors.red}{failedCount} failed{colors.nc}, ")
