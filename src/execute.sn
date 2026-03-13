@@ -85,7 +85,7 @@ fn initColors(enabled: bool): void =>
 
     if enabled =>
         // ESC character is ASCII 27
-        var esc: char = 27 as char
+        var esc: char = 27.toChar()
         colors = Colors {
             red: $"{esc}[0;31m",
             green: $"{esc}[0;32m",
@@ -608,13 +608,13 @@ fn recordResult(result: TestResult): void =>
 // Print live progress counter (overwrites current line)
 fn printProgress(current: int, total: int): void =>
     // Use carriage return to overwrite the line
-    var cr: char = 13 as char
+    var cr: char = 13.toChar()
     print($"{cr}  Running tests... [{current}/{total}]")
     Stdout.flush()
 
 // Clear the progress line
 fn clearProgress(): void =>
-    var cr: char = 13 as char
+    var cr: char = 13.toChar()
     print($"{cr}                                        {cr}")
 
 fn printTestResult(result: TestResult, verbose: bool): void =>
