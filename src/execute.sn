@@ -531,7 +531,7 @@ fn runPositiveTest(runner: TestRunner, testFile: str, exeFile: str, testType: st
     // Compare output if expected file exists
     if hasExpected =>
         var expectedOutput: str = TextFile.readAll(expectedFile)
-        var actualOutput: str = runResult.stdout
+        var actualOutput: str = copyOf(runResult.stdout)
 
         // Normalize line endings
         expectedOutput = expectedOutput.replace("\r\n", "\n")
@@ -653,10 +653,10 @@ fn runSnTestsWithDir(runner: TestRunner, testType: str, customDir: str): bool =>
     // Override testDir if custom directory is provided
     if customDir != "" =>
         // Create a new config to avoid struct field modification issues
-        var newPattern: str = config.pattern
+        var newPattern: str = copyOf(config.pattern)
         if newPattern == "" =>
             newPattern = "test_*.sn"
-        var newTitle: str = config.title
+        var newTitle: str = copyOf(config.title)
         if newTitle == "" =>
             newTitle = "Custom Tests"
         config = TestConfig {
