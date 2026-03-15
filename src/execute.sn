@@ -410,7 +410,7 @@ fn runErrorTest(runner: TestRunner, testFile: str, exeFile: str): TestResult =>
 
     if !Path.isFile(expectedFile) =>
         return TestResult {
-            testName: testName,
+            testName: copyOf(testName),
             status: "skip",
             reason: "no .expected",
             details: {},
@@ -426,7 +426,7 @@ fn runErrorTest(runner: TestRunner, testFile: str, exeFile: str): TestResult =>
 
     if result.exitCode == 0 =>
         return TestResult {
-            testName: testName,
+            testName: copyOf(testName),
             status: "fail",
             reason: "should not compile",
             details: {},
@@ -438,7 +438,7 @@ fn runErrorTest(runner: TestRunner, testFile: str, exeFile: str): TestResult =>
 
     if result.stderr.contains(expectedError) =>
         return TestResult {
-            testName: testName,
+            testName: copyOf(testName),
             status: "pass",
             reason: "",
             details: {},
@@ -446,7 +446,7 @@ fn runErrorTest(runner: TestRunner, testFile: str, exeFile: str): TestResult =>
         }
     else =>
         return TestResult {
-            testName: testName,
+            testName: copyOf(testName),
             status: "fail",
             reason: "wrong error",
             details: {$"Expected: {expectedError}", $"Got: {result.stderr}"},
@@ -464,7 +464,7 @@ fn runPositiveTest(runner: TestRunner, testFile: str, exeFile: str, testType: st
     // For standard tests, require .expected file unless running in explore/all mode
     if !hasExpected && testType != "explore" && testType != "sdk" && testType != "all" =>
         return TestResult {
-            testName: testName,
+            testName: copyOf(testName),
             status: "skip",
             reason: "no .expected",
             details: {},
@@ -483,7 +483,7 @@ fn runPositiveTest(runner: TestRunner, testFile: str, exeFile: str, testType: st
     if compileResult.exitCode != 0 =>
         var elapsed: long = Time.now().diff(startTime)
         return TestResult {
-            testName: testName,
+            testName: copyOf(testName),
             status: "fail",
             reason: "compile error",
             details: compileResult.stderr.splitLines(),
@@ -501,7 +501,7 @@ fn runPositiveTest(runner: TestRunner, testFile: str, exeFile: str, testType: st
     // Check for timeout
     if runResult.timedOut =>
         return TestResult {
-            testName: testName,
+            testName: copyOf(testName),
             status: "fail",
             reason: "timeout",
             details: {},
@@ -512,7 +512,7 @@ fn runPositiveTest(runner: TestRunner, testFile: str, exeFile: str, testType: st
     if expectsPanic =>
         if runResult.exitCode == 0 =>
             return TestResult {
-                testName: testName,
+                testName: copyOf(testName),
                 status: "fail",
                 reason: "expected panic",
                 details: {},
@@ -521,7 +521,7 @@ fn runPositiveTest(runner: TestRunner, testFile: str, exeFile: str, testType: st
     else =>
         if runResult.exitCode != 0 =>
             return TestResult {
-                testName: testName,
+                testName: copyOf(testName),
                 status: "fail",
                 reason: $"exit code: {runResult.exitCode}",
                 details: runResult.stdout.splitLines(),
@@ -539,7 +539,7 @@ fn runPositiveTest(runner: TestRunner, testFile: str, exeFile: str, testType: st
 
         if actualOutput == expectedOutput =>
             return TestResult {
-                testName: testName,
+                testName: copyOf(testName),
                 status: "pass",
                 reason: "",
                 details: {},
@@ -549,15 +549,15 @@ fn runPositiveTest(runner: TestRunner, testFile: str, exeFile: str, testType: st
             // Generate detailed line-by-line diff
             var diffDetails: str[] = generateDiffDetails(expectedOutput, actualOutput, 10)
             return TestResult {
-                testName: testName,
+                testName: copyOf(testName),
                 status: "fail",
                 reason: "output mismatch",
-                details: diffDetails,
+                details: copyOf(diffDetails),
                 elapsedMs: elapsed
             }
 
     return TestResult {
-        testName: testName,
+        testName: copyOf(testName),
         status: "pass",
         reason: "",
         details: {},
@@ -569,7 +569,7 @@ fn runSingleTest(runner: TestRunner, testFile: str, testType: str, testIndex: in
 
     if isExcluded(testName, runner.excludedTests) =>
         return TestResult {
-            testName: testName,
+            testName: copyOf(testName),
             status: "skip",
             reason: "excluded",
             details: {},
@@ -660,10 +660,10 @@ fn runSnTestsWithDir(runner: TestRunner, testType: str, customDir: str): bool =>
         if newTitle == "" =>
             newTitle = "Custom Tests"
         config = TestConfig {
-            testDir: customDir,
-            pattern: newPattern,
+            testDir: copyOf(customDir),
+            pattern: copyOf(newPattern),
             expectCompileFail: config.expectCompileFail,
-            title: newTitle
+            title: copyOf(newTitle)
         }
 
     if config.testDir == "" =>
@@ -717,7 +717,7 @@ fn runSnTestsWithDir(runner: TestRunner, testType: str, customDir: str): bool =>
 
             // Collect results
             for i in 0..batch.length =>
-                allResults.push(batch[i])
+                allResults.push(copyOf(batch[i]))
                 printProgress(allResults.length, testFiles.length)
 
             batchStart = batchEnd
@@ -893,13 +893,13 @@ fn main(args: str[]): int =>
 
     // Create runner
     var runner: TestRunner = TestRunner {
-        compiler: compiler,
+        compiler: copyOf(compiler),
         compileTimeout: parsedArgs.timeout,
         runTimeout: parsedArgs.runTimeout,
         verbose: parsedArgs.verbose,
         parallel: parsedArgs.parallel,
-        tempDir: tempDir,
-        excludedTests: parsedArgs.excludedTests
+        tempDir: copyOf(tempDir),
+        excludedTests: copyOf(parsedArgs.excludedTests)
     }
 
     var allPassed: bool = true
