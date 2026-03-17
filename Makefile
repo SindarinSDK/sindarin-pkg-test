@@ -66,7 +66,9 @@ $(BIN_DIR):
 
 $(RUN_TESTS_BIN): $(RUN_TESTS_SN) $(SRC_SOURCES) | $(BIN_DIR)
 	@echo "Compiling execute.sn..."
-	@$(SN) $(RUN_TESTS_SN) -o $(RUN_TESTS_BIN) -l 1
+	@mkdir -p .sn/sindarin-pkg-test
+	@cp -a src .sn/sindarin-pkg-test/
+	@$(SN) .sn/sindarin-pkg-test/src/execute.sn -o $(RUN_TESTS_BIN) -l 1
 
 #------------------------------------------------------------------------------
 # clean - Remove build artifacts
