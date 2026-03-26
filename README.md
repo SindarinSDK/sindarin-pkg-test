@@ -61,6 +61,7 @@ All tests passed!
 | Module | Import | Description |
 |--------|--------|-------------|
 | Assert | `import "test/assert"` | Test assertions and result tracking |
+| `src/execute.sn` | | Test runner — discovers and executes test suites, reports results |
 
 ### Assert
 
@@ -128,14 +129,14 @@ summary()           # Print results and pass/fail message
 
 ### Test Runner
 
-The package includes a cross-platform test runner at `scripts/run_tests.sn` that discovers and executes test files with parallel support.
+The package includes a cross-platform test runner at `src/execute.sn` that discovers and executes test files with parallel support.
 
 #### Using the Test Runner
 
 Add the test runner to your `Makefile`:
 
 ```makefile
-RUN_TESTS_SN := .sn/sindarin-pkg-test/scripts/run_tests.sn
+RUN_TESTS_SN := .sn/sindarin-pkg-test/src/execute.sn
 RUN_TESTS_BIN := bin/run_tests$(EXE_EXT)
 
 $(RUN_TESTS_BIN): $(RUN_TESTS_SN) | $(BIN_DIR)
