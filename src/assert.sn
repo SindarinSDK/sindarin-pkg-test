@@ -210,3 +210,4 @@ fn summary(): void =>
     print("All tests passed!\n")
   else =>
     print("Some tests failed!\n")
+    assert(false, $"summary: {testsFailed} test(s) failed")
