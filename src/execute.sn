@@ -67,7 +67,7 @@ struct Colors =>
 
 // Global colors - initialized once at startup, never modified
 // (Workaround for compiler bug: modifying static struct string fields causes corruption)
-static var colors: Colors = Colors {
+static var colors: Colors = {
   red: "",
   green: "",
   yellow: "",
@@ -775,7 +775,7 @@ struct Args =>
   showHelp: bool = false
 
 fn parseArgs(args: str[]): Args =>
-  var result: Args = Args {
+  var result: Args = {
     excludedTests: {}
   }
   // Start at 1 to skip program name (args[0])
@@ -892,7 +892,7 @@ fn main(args: str[]): int =>
     print($"Parallel: {parsedArgs.parallel} workers\n")
 
   // Create runner
-  var runner: TestRunner = TestRunner {
+  var runner: TestRunner = {
     compiler: copyOf(compiler),
     compileTimeout: parsedArgs.timeout,
     runTimeout: parsedArgs.runTimeout,
